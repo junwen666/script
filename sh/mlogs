@@ -1,0 +1,19 @@
+#!/bin/bash
+#日志文件目录
+LOG_DIR=/efs/test-v1/pvc-8369d068-11a3-4747-b353-14264a8b3c7f/soa-all/
+
+#校验查询服务个数
+SERVER_NUM=`ls ${LOG_DIR} | grep $1 | wc -l`
+if [ $SERVER_NUM -gt 1 ]; then
+	echo '根据`$1`查询服务不唯一'
+	exit
+fi
+
+#获取服务名
+SERVER_NAME=`ls ${LOG_DIR} | grep $1`
+
+#获取最新日志文件
+LOG_NAME=`ls -alt ${LOG_DIR}${SERVER_NAME}/info/ | awk '{print $9}'| head -n 2 | grep 'log'`
+
+#查看日志
+cat ${LOG_DIR}${SERVER_NAME}/info/${LOG_NAME}
